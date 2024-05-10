@@ -19,6 +19,7 @@
             <children>
                <HBox alignment="CENTER" prefHeight="55.0" prefWidth="694.0" spacing="10.0">
                   <children>
+                     <Button mnemonicParsing="false" text="⛶" />
                      <Button fx:id="openButton" mnemonicParsing="false" onAction="#open" text="open" textAlignment="CENTER">
                         <opaqueInsets>
                            <Insets />
