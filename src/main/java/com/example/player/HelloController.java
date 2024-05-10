@@ -2,7 +2,6 @@ package com.example.player;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -17,19 +16,45 @@ public class HelloController {
     private Button openButton;
     @FXML
     private MediaView player;
+    @FXML
+    private Button playPauseButton;
 
     private File file;
-    private MediaPlayer medaPlayer;
+    private MediaPlayer mediaPlayer;
     private Media media;
+    private Boolean isPlaying = false;
 
-
+    public void playPaue(){
+        if (isPlaying){
+            pause();
+        }else {
+            play();
+        }
+    }
+    public void play(){
+        if (mediaPlayer != null){
+            mediaPlayer.play();
+            isPlaying = true;
+            playPauseButton.setText("⏸");
+        }
+    }
+    public void pause(){
+        if (mediaPlayer != null){
+            mediaPlayer.pause();
+            isPlaying = false;
+            playPauseButton.setText("▶");
+        }
+    }
     public void open() {
+
         FileChooser fileChooser = new FileChooser();
         Stage stage = (Stage) openButton.getScene().getWindow();
         file = fileChooser.showOpenDialog(stage);
         media = new Media(file.toURI().toString());
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer = new MediaPlayer(media);
         player.setMediaPlayer(mediaPlayer);
+        isPlaying = true;
+        mediaPlayer.play();
 
     }
 
