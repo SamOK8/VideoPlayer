@@ -1,4 +1,4 @@
-package com.example.player;
+package v.player;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,7 @@ public class HelloApplication extends Application {
         stage.show();
         stage.setWidth(800);
         stage.setHeight(550);
-        stage.setResizable(false);
+        //stage.setResizable(false);
     }
 
 

@@ -5,6 +5,6 @@ module com.example.player {
     requires org.controlsfx.controls;
     requires java.datatransfer;
 
-    opens com.example.player to javafx.fxml;
-    exports com.example.player;
+    opens v.player to javafx.fxml;
+    exports v.player;
 }
