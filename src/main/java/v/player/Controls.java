@@ -5,18 +5,18 @@ import javafx.scene.control.Slider;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Controls {
     private Timer timer;
     private TimerTask task;
-    public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider){
+    public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider, double speed){
         if (mediaPlayer != null){
             beginTimer(mediaPlayer, media, progressSlider, playPauseButton);
             mediaPlayer.play();
             mediaPlayer.setVolume(volume);
+            mediaPlayer.setRate(speed);
             playPauseButton.setText("⏸");
 
         }

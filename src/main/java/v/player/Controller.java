@@ -3,7 +3,6 @@ package v.player;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ScrollPane;
@@ -13,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
@@ -21,10 +21,8 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
-public class HelloController {
+public class Controller {
     @FXML
     private ChoiceBox speedBox;
     @FXML
@@ -53,6 +51,8 @@ public class HelloController {
     private int index = -1;
     private double volume = 100;
     Controls controls = new Controls();
+    private double speed = 1;
+
 
     public void initialize(){
 
@@ -60,64 +60,7 @@ public class HelloController {
             speedBox.getItems().add(speeds[i]);
         }
         speedBox.setOnAction(this::setSpeed);
-    }
 
-    public void playPaue(){
-        if(mediaPlayer != null){
-            if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())){
-                controls.pause(mediaPlayer, playPauseButton);
-
-            }else {
-                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider);
-            }
-        }
-    }
-    /**
-     *
-     */
-    public void open() {
-
-        FileChooser fileChooser = new FileChooser();
-        Stage stage = (Stage) openButton.getScene().getWindow();
-        file = fileChooser.showOpenDialog(stage);
-        if (file != null) {
-//            media = new Media(file.toURI().toString());
-//            mediaPlayer = new MediaPlayer(media);
-//            player.setMediaPlayer(mediaPlayer);
-//            play();
-
-            files.add(file);
-            index++;
-            final int currentIndex = index;
-            Button button = new Button(files.get(currentIndex).getName());
-            pane.add(button, 1, currentIndex);
-            if (currentIndex == 0){
-                changeMedia(currentIndex);
-            }
-            button.setOnAction(actionEvent -> {
-                controls.stop(mediaPlayer, playPauseButton);
-                changeMedia(currentIndex);
-            });
-            volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> mediaPlayer.setVolume(newValue.doubleValue() / 100));
-            volumeSlider.setValue(volume);
-
-
-            progressSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if (progressSlider.isPressed()) {
-                    Duration total = media.getDuration();
-                    System.out.println();
-                    double value = newValue.doubleValue();
-                    Duration position = total.multiply(value / 100);
-                    System.out.println(position);
-                    mediaPlayer.stop();
-                    mediaPlayer.setStartTime(position);
-                    controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider);
-
-                }
-            });
-        }
-        //.....................................................
-        Scene scene = playPauseButton.getScene();
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -130,8 +73,60 @@ public class HelloController {
         });
 
         resizeWhenMoving();
+    }
 
-    //......................................................
+    public void playPaue(){
+        if(mediaPlayer != null){
+            if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())){
+                controls.pause(mediaPlayer, playPauseButton);
+
+            }else {
+                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+            }
+        }
+    }
+    /**
+     *
+     */
+    public void open() {
+        FileChooser fileChooser = new FileChooser();
+        Stage stage = (Stage) openButton.getScene().getWindow();
+        file = fileChooser.showOpenDialog(stage);
+        if (file != null) {
+            files.add(file);
+            index++;
+            final int currentIndex = index;
+            Button button = new Button(files.get(currentIndex).getName());
+            pane.add(button, 1, currentIndex);
+            if (currentIndex == 0){
+                changeMedia(currentIndex);
+            }
+
+            button.setOnAction(actionEvent -> {
+                controls.stop(mediaPlayer, playPauseButton);
+                changeMedia(currentIndex);
+            });
+            if (mediaPlayer != null) {
+                volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> mediaPlayer.setVolume(newValue.doubleValue() / 100));
+                volumeSlider.setValue(volume);
+
+            }
+            progressSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+                if (progressSlider.isPressed()) {
+                    Duration total = media.getDuration();
+                    System.out.println();
+                    double value = newValue.doubleValue();
+                    Duration position = total.multiply(value / 100);
+                    System.out.println(position);
+                    mediaPlayer.stop();
+                    mediaPlayer.setStartTime(position);
+                    controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+
+                }
+            });
+        }
+
+
         videos.setContent(pane);
     }
     /**
@@ -148,13 +143,11 @@ public class HelloController {
             ((Stage)player.getScene().getWindow()).setFullScreen(false);
             setScene();
         }
-
-
     }
     /**
      * Calculates size of the window.
      */
-    private void setScene(){
+    public void setScene(){
         Controls.setPrefWidth(scene.getWidth()-40);
         player.setFitWidth(scene.getWidth()-80);
         player.setFitHeight(scene.getHeight()-150);
@@ -163,12 +156,16 @@ public class HelloController {
      * Sets speed of video
      * @param event
      */
-    private void setSpeed(Event event){
+    public void setSpeed(Event event){
         if (mediaPlayer != null) {
             mediaPlayer.setRate(Double.parseDouble(String.valueOf(speedBox.getValue())));
-
+            speed = Double.parseDouble(String.valueOf(speedBox.getValue()));
         }
     }
+
+    /**
+     * when mouse is moving inside the panel it will set its calculated size
+     */
     public void resizeWhenMoving(){
 
         scene.setOnMouseMoved(m -> {
@@ -176,19 +173,35 @@ public class HelloController {
         });
 
     }
+
+    /**
+     *
+     * @param index
+     */
     public void changeMedia(int index){
-        if (index == 0){
-            media = new Media(files.get(index).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            player.setMediaPlayer(mediaPlayer);
-            controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider);
-        }else {
-            volume = mediaPlayer.getVolume();
-            media = new Media(files.get(index).toURI().toString());
-            mediaPlayer = new MediaPlayer(media);
-            player.setMediaPlayer(mediaPlayer);
-            controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider);
+        try {
+            if (index == 0){
+                String uri = files.get(index).toURI().toString();
+                media = new Media(uri);
+                mediaPlayer = new MediaPlayer(media);
+                player.setMediaPlayer(mediaPlayer);
+                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+            }else {
+                volume = mediaPlayer.getVolume();
+                String uri = files.get(index).toURI().toString();
+                media = new Media(uri);
+                mediaPlayer = new MediaPlayer(media);
+                player.setMediaPlayer(mediaPlayer);
+                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+            }
+
+        }catch (MediaException e) {
+            System.err.println("Error playing media: " + e.getMessage());
+            e.printStackTrace();
+
         }
+
+
     }
 
 
