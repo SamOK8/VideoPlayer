@@ -1,6 +1,7 @@
 package v.player;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -20,6 +21,7 @@ public class HelloApplication extends Application {
         stage.setWidth(800);
         stage.setHeight(550);
         //stage.setResizable(false);
+        stage.setOnCloseRequest(e -> Platform.exit());
     }
 
 

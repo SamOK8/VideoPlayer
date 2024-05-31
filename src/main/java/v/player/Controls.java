@@ -14,10 +14,10 @@ public class Controls {
 
     public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider, double speed) {
         if (mediaPlayer != null) {
-            beginTimer(mediaPlayer, media, progressSlider, playPauseButton);
-            mediaPlayer.play();
+            beginTimer(mediaPlayer, media, progressSlider);
             mediaPlayer.setVolume(volume);
             mediaPlayer.setRate(speed);
+            mediaPlayer.play();
             playPauseButton.setText("⏸");
 
         }
@@ -25,26 +25,27 @@ public class Controls {
 
     public void pause(MediaPlayer mediaPlayer, Button playPauseButton) {
         if (mediaPlayer != null) {
-            mediaPlayer.pause();
             endTimer();
+            mediaPlayer.pause();
             playPauseButton.setText("▶");
         }
     }
 
     public void stop(MediaPlayer mediaPlayer, Button playPauseButton) {
         if (mediaPlayer != null) {
-            mediaPlayer.stop();
             endTimer();
+            mediaPlayer.stop();
             playPauseButton.setText("▶");
         }
     }
 
     public void endTimer() {
         timer.cancel();
+        task.cancel();
     }
 
 
-    public void beginTimer(MediaPlayer mediaPlayer, Media media, Slider progressSlider, Button playPauseButton) {
+    public void beginTimer(MediaPlayer mediaPlayer, Media media, Slider progressSlider) {
 
         timer = new Timer();
         task = new TimerTask() {
@@ -56,8 +57,6 @@ public class Controls {
                     if (!progressSlider.isPressed()) {
                         progressSlider.setValue((current / total) * 100);
                     }
-                    mediaPlayer.setOnEndOfMedia(() ->
-                            stop(mediaPlayer, playPauseButton));
                 }
 
             }

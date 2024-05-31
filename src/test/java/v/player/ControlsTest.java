@@ -79,7 +79,7 @@ class ControlsTest {
 
     @Test
     void beginTimer() {
-        controls.beginTimer(mediaPlayer, media, slider, playPauseButton);
+        controls.beginTimer(mediaPlayer, media, slider);
 
         assertNotNull(controls.getTask());
     }

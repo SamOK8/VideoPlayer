@@ -73,13 +73,28 @@ public class Controller {
         });
 
         resizeWhenMoving();
+
+        volumeSlider.setValue(volume);
+        volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> mediaPlayer.setVolume(newValue.doubleValue() / 100));
+
+        progressSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (progressSlider.isPressed()) {
+                Duration total = media.getDuration();
+                System.out.println();
+                double value = newValue.doubleValue();
+                Duration position = total.multiply(value / 100);
+                System.out.println(position);
+                mediaPlayer.stop();
+                mediaPlayer.setStartTime(position);
+                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
+            }
+        });
     }
 
     public void playPaue() {
         if (mediaPlayer != null) {
             if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())) {
                 controls.pause(mediaPlayer, playPauseButton);
-
             } else {
                 controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
             }
@@ -104,29 +119,10 @@ public class Controller {
             }
 
             button.setOnAction(actionEvent -> {
-                controls.stop(mediaPlayer, playPauseButton);
                 changeMedia(currentIndex);
             });
-            if (mediaPlayer != null) {
-                volumeSlider.valueProperty().addListener((observable, oldValue, newValue) -> mediaPlayer.setVolume(newValue.doubleValue() / 100));
-                volumeSlider.setValue(volume);
 
-            }
-            progressSlider.valueProperty().addListener((observable, oldValue, newValue) -> {
-                if (progressSlider.isPressed()) {
-                    Duration total = media.getDuration();
-                    System.out.println();
-                    double value = newValue.doubleValue();
-                    Duration position = total.multiply(value / 100);
-                    System.out.println(position);
-                    mediaPlayer.stop();
-                    mediaPlayer.setStartTime(position);
-                    controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
-
-                }
-            });
         }
-
 
         videos.setContent(pane);
     }
@@ -137,8 +133,6 @@ public class Controller {
     public void fullScreen() {
         if (!((Stage) player.getScene().getWindow()).isFullScreen()) {
             ((Stage) player.getScene().getWindow()).setFullScreen(true);
-
-            //setScene();
             player.setFitWidth(scene.getWidth());
             player.setFitHeight(scene.getHeight() - 70);
         } else if (((Stage) player.getScene().getWindow()).isFullScreen()) {
@@ -184,31 +178,27 @@ public class Controller {
      */
     public void changeMedia(int index) {
         try {
-            if (index == 0) {
-                String uri = files.get(index).toURI().toString();
-                media = new Media(uri);
-                mediaPlayer = new MediaPlayer(media);
-                player.setMediaPlayer(mediaPlayer);
-                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
-            } else {
+            controls.stop(mediaPlayer, playPauseButton);
+            if (index != 0) {
                 volume = mediaPlayer.getVolume();
-                String uri = files.get(index).toURI().toString();
-                media = new Media(uri);
-                mediaPlayer = new MediaPlayer(media);
-                player.setMediaPlayer(mediaPlayer);
-                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
             }
 
+            String uri = files.get(index).toURI().toString();
+            media = new Media(uri);
+            mediaPlayer = new MediaPlayer(media);
+            mediaPlayer.setOnEndOfMedia(() ->
+                    controls.stop(mediaPlayer, playPauseButton));
+            player.setMediaPlayer(mediaPlayer);
+            controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
         } catch (MediaException e) {
             System.err.println("Error playing media: " + e.getMessage());
             e.printStackTrace();
-
         }
-
-
     }
 
     public double getSpeed() {
         return speed;
     }
+
+
 }
