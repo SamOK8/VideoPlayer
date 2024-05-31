@@ -54,9 +54,9 @@ public class Controller {
     private double speed = 1;
 
 
-    public void initialize(){
+    public void initialize() {
 
-        for (int i = 0; i < speeds.length; i++){
+        for (int i = 0; i < speeds.length; i++) {
             speedBox.getItems().add(speeds[i]);
         }
         speedBox.setOnAction(this::setSpeed);
@@ -75,16 +75,17 @@ public class Controller {
         resizeWhenMoving();
     }
 
-    public void playPaue(){
-        if(mediaPlayer != null){
-            if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())){
+    public void playPaue() {
+        if (mediaPlayer != null) {
+            if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())) {
                 controls.pause(mediaPlayer, playPauseButton);
 
-            }else {
-                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+            } else {
+                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
             }
         }
     }
+
     /**
      *
      */
@@ -98,7 +99,7 @@ public class Controller {
             final int currentIndex = index;
             Button button = new Button(files.get(currentIndex).getName());
             pane.add(button, 1, currentIndex);
-            if (currentIndex == 0){
+            if (currentIndex == 0) {
                 changeMedia(currentIndex);
             }
 
@@ -120,7 +121,7 @@ public class Controller {
                     System.out.println(position);
                     mediaPlayer.stop();
                     mediaPlayer.setStartTime(position);
-                    controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+                    controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
 
                 }
             });
@@ -129,34 +130,38 @@ public class Controller {
 
         videos.setContent(pane);
     }
+
     /**
      * This method is called when fullScreenButton is pressed and it makes fullscreen.
      */
-    public void fullScreen(){
-        if(!((Stage)player.getScene().getWindow()).isFullScreen()){
-            ((Stage)player.getScene().getWindow()).setFullScreen(true);
+    public void fullScreen() {
+        if (!((Stage) player.getScene().getWindow()).isFullScreen()) {
+            ((Stage) player.getScene().getWindow()).setFullScreen(true);
 
             //setScene();
             player.setFitWidth(scene.getWidth());
-            player.setFitHeight(scene.getHeight()-70);
+            player.setFitHeight(scene.getHeight() - 70);
         } else if (((Stage) player.getScene().getWindow()).isFullScreen()) {
-            ((Stage)player.getScene().getWindow()).setFullScreen(false);
+            ((Stage) player.getScene().getWindow()).setFullScreen(false);
             setScene();
         }
     }
+
     /**
      * Calculates size of the window.
      */
-    public void setScene(){
-        Controls.setPrefWidth(scene.getWidth()-40);
-        player.setFitWidth(scene.getWidth()-80);
-        player.setFitHeight(scene.getHeight()-150);
+    public void setScene() {
+        Controls.setPrefWidth(scene.getWidth() - 40);
+        player.setFitWidth(scene.getWidth() - 80);
+        player.setFitHeight(scene.getHeight() - 150);
     }
+
     /**
      * Sets speed of video
+     *
      * @param event
      */
-    public void setSpeed(Event event){
+    public void setSpeed(Event event) {
         if (mediaPlayer != null) {
             mediaPlayer.setRate(Double.parseDouble(String.valueOf(speedBox.getValue())));
             speed = Double.parseDouble(String.valueOf(speedBox.getValue()));
@@ -166,7 +171,7 @@ public class Controller {
     /**
      * when mouse is moving inside the panel it will set its calculated size
      */
-    public void resizeWhenMoving(){
+    public void resizeWhenMoving() {
 
         scene.setOnMouseMoved(m -> {
             setScene();
@@ -175,27 +180,26 @@ public class Controller {
     }
 
     /**
-     *
      * @param index
      */
-    public void changeMedia(int index){
+    public void changeMedia(int index) {
         try {
-            if (index == 0){
+            if (index == 0) {
                 String uri = files.get(index).toURI().toString();
                 media = new Media(uri);
                 mediaPlayer = new MediaPlayer(media);
                 player.setMediaPlayer(mediaPlayer);
-                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
-            }else {
+                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
+            } else {
                 volume = mediaPlayer.getVolume();
                 String uri = files.get(index).toURI().toString();
                 media = new Media(uri);
                 mediaPlayer = new MediaPlayer(media);
                 player.setMediaPlayer(mediaPlayer);
-                controls.play(mediaPlayer,playPauseButton,volume,media,progressSlider, speed);
+                controls.play(mediaPlayer, playPauseButton, volume, media, progressSlider, getSpeed());
             }
 
-        }catch (MediaException e) {
+        } catch (MediaException e) {
             System.err.println("Error playing media: " + e.getMessage());
             e.printStackTrace();
 
@@ -204,5 +208,7 @@ public class Controller {
 
     }
 
-
+    public double getSpeed() {
+        return speed;
+    }
 }

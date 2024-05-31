@@ -11,8 +11,9 @@ import java.util.TimerTask;
 public class Controls {
     private Timer timer;
     private TimerTask task;
-    public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider, double speed){
-        if (mediaPlayer != null){
+
+    public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider, double speed) {
+        if (mediaPlayer != null) {
             beginTimer(mediaPlayer, media, progressSlider, playPauseButton);
             mediaPlayer.play();
             mediaPlayer.setVolume(volume);
@@ -21,24 +22,29 @@ public class Controls {
 
         }
     }
-    public void pause(MediaPlayer mediaPlayer, Button playPauseButton){
-        if (mediaPlayer != null){
+
+    public void pause(MediaPlayer mediaPlayer, Button playPauseButton) {
+        if (mediaPlayer != null) {
             mediaPlayer.pause();
             endTimer();
             playPauseButton.setText("▶");
         }
     }
-    public void stop(MediaPlayer mediaPlayer, Button playPauseButton){
+
+    public void stop(MediaPlayer mediaPlayer, Button playPauseButton) {
         if (mediaPlayer != null) {
             mediaPlayer.stop();
             endTimer();
             playPauseButton.setText("▶");
         }
     }
+
     public void endTimer() {
         timer.cancel();
     }
-    public void beginTimer(MediaPlayer mediaPlayer, Media media, Slider progressSlider,Button playPauseButton) {
+
+
+    public void beginTimer(MediaPlayer mediaPlayer, Media media, Slider progressSlider, Button playPauseButton) {
 
         timer = new Timer();
         task = new TimerTask() {
@@ -58,5 +64,13 @@ public class Controls {
 
         };
         timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+
+    public Timer getTimer() {
+        return timer;
+    }
+
+    public TimerTask getTask() {
+        return task;
     }
 }

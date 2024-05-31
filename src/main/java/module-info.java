@@ -1,8 +1,8 @@
-module com.example.player {
+module sam.player {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.media;
-    requires org.controlsfx.controls;
+    //  requires org.controlsfx.controls;
     requires java.datatransfer;
 
     opens v.player to javafx.fxml;
