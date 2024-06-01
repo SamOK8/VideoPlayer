@@ -12,6 +12,17 @@ public class Controls {
     private Timer timer;
     private TimerTask task;
 
+    /**
+     * play the media on the specified media player with the specified volume, speed and progress
+     *
+     * @param mediaPlayer
+     * @param playPauseButton
+     * @param volume
+     * @param media
+     * @param progressSlider
+     * @param speed
+     */
+
     public void play(MediaPlayer mediaPlayer, Button playPauseButton, double volume, Media media, Slider progressSlider, double speed) {
         if (mediaPlayer != null) {
             beginTimer(mediaPlayer, media, progressSlider);
@@ -23,6 +34,12 @@ public class Controls {
         }
     }
 
+    /**
+     * Pause media player and change the button graphics to play symbol for the next action
+     *
+     * @param mediaPlayer
+     * @param playPauseButton
+     */
     public void pause(MediaPlayer mediaPlayer, Button playPauseButton) {
         if (mediaPlayer != null) {
             endTimer();
@@ -31,6 +48,12 @@ public class Controls {
         }
     }
 
+    /**
+     * Stop the media player and change the button graphics to play symbol for the next action
+     *
+     * @param mediaPlayer
+     * @param playPauseButton
+     */
     public void stop(MediaPlayer mediaPlayer, Button playPauseButton) {
         if (mediaPlayer != null) {
             endTimer();
@@ -39,12 +62,21 @@ public class Controls {
         }
     }
 
+    /**
+     * End the progress bar update timer
+     */
     public void endTimer() {
         timer.cancel();
         task.cancel();
     }
 
-
+    /**
+     * Start the progress bar update timer
+     *
+     * @param mediaPlayer
+     * @param media
+     * @param progressSlider
+     */
     public void beginTimer(MediaPlayer mediaPlayer, Media media, Slider progressSlider) {
 
         timer = new Timer();

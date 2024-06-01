@@ -61,6 +61,7 @@ public class Controller {
         }
         speedBox.setOnAction(this::setSpeed);
 
+        // handle the ESC key press to escape the full screen
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent keyEvent) {
@@ -91,6 +92,9 @@ public class Controller {
         });
     }
 
+    /**
+     * Starts playing the video or pause if the player is already playing
+     */
     public void playPaue() {
         if (mediaPlayer != null) {
             if (MediaPlayer.Status.PLAYING.equals(mediaPlayer.getStatus())) {
@@ -102,7 +106,7 @@ public class Controller {
     }
 
     /**
-     *
+     * Opens a chooser to add the video file to the list
      */
     public void open() {
         FileChooser fileChooser = new FileChooser();
@@ -174,7 +178,9 @@ public class Controller {
     }
 
     /**
-     * @param index
+     * Switches actually playing video
+     *
+     * @param index - index of video to switch to
      */
     public void changeMedia(int index) {
         try {
